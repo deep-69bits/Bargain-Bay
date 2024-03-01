@@ -1,10 +1,25 @@
-import React from 'react'
+import React, { useEffect } from 'react';
 import { Bungee } from "next/font/google";
 import Lottie from "lottie-react";
 import Button from '@/components/Buttons';
 import HeroLottie from '../../public/Images/heroLottie.json'
 const inter = Bungee({ weight: ['400'], subsets: ["latin"] });
 const Hero = () => {
+    // src/components/Hero.tsx
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      // Your client-side code here
+      const lottie = require('lottie-web');
+      const animation = lottie.loadAnimation({
+        container: document.getElementById('lottie-container'), // Example usage of document
+        renderer: 'svg',
+        loop: true,
+        autoplay: true,
+        path: 'path/to/your/animation.json',
+      });
+    }
+  }, []);
+
     return (
         <div className='lg:mx-20 mx-5  h- py-10 flex justify-center gap-x-40 '>
             <div>
