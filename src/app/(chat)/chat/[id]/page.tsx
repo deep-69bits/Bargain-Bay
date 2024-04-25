@@ -56,9 +56,6 @@ const Page = ({ params }: { params: { id: string } }) => {
         return;
       }
       const { data, error } = await supabase.from("messages").select("*");
-      // .or(`sender_id.eq.${senderID},receiver_id.eq.${params.id}`)
-      // .or(`sender_id.eq.${params.id},receiver_id.eq.${senderID}`);
-
       if (error) {
         console.error("Error fetching messages:", error);
         return;
@@ -109,7 +106,29 @@ const Page = ({ params }: { params: { id: string } }) => {
     setContent("");
   };
 
- 
+  function generateRandomString(length: number): string {
+    const characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let result = "";
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(
+        Math.floor(Math.random() * characters.length)
+      );
+    }
+    return result;
+  }
+
+  const sendVideo=async()=>{
+        
+     const roomid = generateRandomString(5);
+
+      const { error, data } = await supabase.from("messages").insert({
+        content: `https://www.bargainbay.site/room/${roomid}`,
+        sender_id: senderID,
+        receiver_id: receiver.id,
+        isVideo: true,
+      });
+  }
 
   return (
     <ThemeProvider themeMode="light">
@@ -156,7 +175,13 @@ const Page = ({ params }: { params: { id: string } }) => {
                             className="h-10 w-10 rounded-full"
                           />
                           <div className="relative mr-3 text-sm bg-indigo-100 py-2 px-4 shadow rounded-xl">
-                            <div>{item.content}</div>
+                            {
+                              item.isVideo? <div className=" flex flex-col items-center justify-center gap-y-2">
+                                Join Video Call 
+                                <Link className="bg-green-400 text-center  w-[200px] text-base text-white px-16 py-2 rounded-lg"  href={item.content}>Join</Link>
+                              </div> :  <div>{item.content}</div>
+                            }
+
                           </div>
                         </div>
                       </div>
@@ -204,7 +229,7 @@ const Page = ({ params }: { params: { id: string } }) => {
                     <>
                       <ActionIcon icon={Eraser} onClick={handleErase} />
                       <ActionIcon icon={Send} onClick={handleSubmit} />
-                      <ActionIcon icon={Video} />
+                      <ActionIcon icon={Video} onClick={sendVideo} />
                       <EmojiPicker
                         backgroundColor="white"
                         onChange={(emoji) => {
