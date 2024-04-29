@@ -1,5 +1,7 @@
+"use client";
 import { supabase } from "@/lib/SupabaseClient";
 import { Separator } from "@/components/ui/separator";
+import React, { useState, useEffect } from "react";
 import {
   Accordion,
   AccordionContent,
@@ -8,6 +10,16 @@ import {
 } from "@/components/ui/accordion";
 import { Checkbox } from "@/components/ui/checkbox";
 import AISearch from "@/components/Molecules/AISearch";
+
+type Product = {
+  id: string;
+  product_name: string;
+  description: string;
+  created_at: string;
+  product_price: string;
+  image: string;
+  category: string;
+};
 
 const Card = ({ item }: any) => {
   return (
@@ -81,14 +93,112 @@ const Robot = () => {
   );
 };
 
-async function getData() {
-  const { data, error } = await supabase.from("products").select();
+// useEffect(() => {
 
-  return data;
-}
-export const dynamic = "force-dynamic";
-const page = async () => {
-  const products = await getData();
+  const page = () => {
+    const [products, setProducts] = useState<Product[]>([]);
+    const[category, setCategory]= useState<Product[]>([]);
+    const[sort, setSort]= useState<Product[]>([]);
+    // const products= await supabase.from("products").select("*");
+
+    const handleClick = async (option: string) => {
+      let query: any;
+    
+      if(category.length>0){
+        query = supabase
+        .from('products')
+        .select('*')
+        .in('id', category.map((product) => product.id));
+      }
+      
+      else {
+        query = supabase.from("products").select("*");
+      }
+
+      switch (option) {
+        case "MostRecent":
+          query = query.order("created_at", { ascending: false });
+          break;
+        case "LeastRecent":
+          query = query.order("created_at", { ascending: true });
+          break;
+        case "LowtoHigh":
+          query = query.order("product_price", { ascending: true });
+          break;
+        case "HightoLow":
+          query = query.order("product_price", { ascending: false });
+          break;
+        default:
+          break;
+      }
+
+      const { data, error } = await query;
+      console.log({ data });
+
+      setProducts(data || []);
+      setSort(data || []);
+    
+    };
+
+    const handleCategory = async (option: string) => {
+      let query: any;
+  
+      // Update query based on selected sorting option
+      if (sort.length > 0) {
+        query = supabase
+          .from('products')
+          .select('*')
+          .in('id', sort.map((product) => product.id));
+      } else {
+        query = supabase.from('products').select('*');
+      }
+  
+      const { data: allProducts, error } = await query;
+  
+      if (error) {
+        console.error('Error fetching products:', error.message);
+        return;
+      }
+  
+      let filteredProducts = [];
+  
+      // Apply category filter
+      switch (option) {
+        case 'Automobile':
+          filteredProducts = allProducts.filter(
+            (product: Product) =>
+              product.category === 'Bike' || product.category === 'Car'
+          );
+          break;
+        case 'Electronics':
+          filteredProducts = allProducts.filter(
+            (product: Product) =>
+              product.category === 'TV' ||
+              product.category === 'Phone' ||
+              product.category === 'airpods'
+          );
+          break;
+        default:
+          console.log('Invalid category option:', option);
+          return;
+      }
+  
+      // Set the filtered products and category in state
+      setCategory(filteredProducts);
+      setProducts(filteredProducts);
+    };
+
+  const getAllProducts = async () => {
+    const prod= await supabase.from("products").select("*");
+   
+    setProducts(prod.data || []);
+    console.log(prod);
+  }
+
+  useEffect(() => {
+    getAllProducts();
+  
+  }, [])
 
   return (
     <div className="lg:mx-20 mx-5 py-10">
@@ -116,19 +226,19 @@ const page = async () => {
               <AccordionTrigger className="">Sort</AccordionTrigger>
               <AccordionContent className="flex flex-col gap-5">
                 <div className="flex items-center gap-x-4">
-                  <Checkbox />
+                  <input type="radio" name= 'foo' onClick={() => handleClick("MostRecent")} />
                   Most Recent
                 </div>
                 <div className="flex items-center gap-x-4">
-                  <Checkbox />
+                  <input type="radio" name= 'foo' onClick={() => handleClick("LeastRecent")} />
                   Least Recent
                 </div>
                 <div className="flex items-center gap-x-4">
-                  <Checkbox />
+                  <input type="radio" name= 'foo' onClick={() => handleClick("LowtoHigh")} />
                   Low to High
                 </div>
                 <div className="flex items-center gap-x-4">
-                  <Checkbox />
+                  <input type="radio" name= 'foo'  onClick={() => handleClick("HightoLow")} />
                   High to Low
                 </div>
               </AccordionContent>
@@ -140,11 +250,11 @@ const page = async () => {
               <AccordionTrigger className="">Category</AccordionTrigger>
               <AccordionContent className="flex flex-col gap-5">
                 <div className="flex items-center gap-x-4">
-                  <Checkbox />
+                  <input type="radio" name= 'foo2' onClick={() => handleCategory("Electronics")} />
                   Electronics
                 </div>
                 <div className="flex items-center gap-x-4">
-                  <Checkbox />
+                  <input type="radio" name= 'foo2' onClick={() => handleCategory("Automobile")}/>
                   Automobile
                 </div>
               </AccordionContent>
