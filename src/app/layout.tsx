@@ -3,6 +3,7 @@ import { Lexend } from "next/font/google";
 import "./globals.css";
 const inter = Lexend({ weight: ["400"], subsets: ["latin"] });
 
+
 export const metadata: Metadata = {
   title: "Bargain Bay |  Reselling Platform",
   description: "Sell and Buy your products with us on our platform safely.",
