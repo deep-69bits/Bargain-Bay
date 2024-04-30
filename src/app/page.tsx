@@ -3,6 +3,8 @@ import Hero from "@/components/Hero";
 import { Feature } from "@/components/Feature";
 import Testimonials from "@/components/Testimonials";
 import Layout from "@/components/Layout/index";
+import FloatingActionButton from "@/components/ActionButton/index";
+
 export default function Home() {
   return (
     <main className="  ">
@@ -10,6 +12,7 @@ export default function Home() {
         <Hero />
         <Feature />
         <Testimonials />
+        <FloatingActionButton/>
       </Layout>
     </main>
   );
