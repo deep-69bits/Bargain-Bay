@@ -103,8 +103,8 @@ type PROPS_TYPE = {
 
 
 const VARIANT_CLASSNAME = {
-  primary: 'bg-yellow-200 text-black  font-semibold px-10 py-2 rounded-full',
-}
+  primary: 'bg-black text-white px-4 py-2 rounded-lg',
+};
 const BASE_CLASS = ''
 
 export default function Button({
