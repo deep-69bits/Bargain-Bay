@@ -9,6 +9,7 @@ import {
 
 
 interface Message {
+  isSafe: any;
   text: string;
   role: "user" | "bot";
   timestamp: Date;
@@ -90,6 +91,7 @@ export default function Home() {
         text: userInput,
         role: "user",
         timestamp: new Date(),
+        isSafe: undefined
       };
 
       setMessages((prevMessages) => [...prevMessages, userMessage]);
@@ -100,6 +102,7 @@ export default function Home() {
           text: result.response.text(),
           role: "bot",
           timestamp: new Date(),
+          isSafe: undefined
         };
 
         setMessages((prevMessages) => [...prevMessages, botMessage]);
@@ -158,6 +161,7 @@ export default function Home() {
         text: prompt,
         role: "user",
         timestamp: new Date(),
+        isSafe: undefined
       };
   
       console.log(userMessage);
