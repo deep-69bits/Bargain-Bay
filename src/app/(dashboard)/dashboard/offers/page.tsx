@@ -1,4 +1,5 @@
-import React from "react";
+'use client'
+import React, { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -9,15 +10,39 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { supabase } from "@/lib/SupabaseClient";
+import { useRouter } from "next/navigation";
 
-const getOffers = async () => {
-  const { data, error } = await supabase.from("offers").select();
+const getOffers = async (receiver_id:any) => {
+  const { data, error } = await supabase
+    .from("offers")
+    .select()
+    .eq("receiver_id", receiver_id);
   return data;
 };
 
-const page = async () => {
-  const data = await getOffers();
-  console.log(data);
+const Page = () => {
+
+  const router=useRouter()  
+  const [user,setUser]=useState<any>(null)
+  const [data,setData]=useState<any>([])
+
+  useEffect(()=>{
+     const getUser = async () => {
+       const {
+         data: { user },
+       } = await supabase.auth.getUser();
+       if (user) {
+         setUser(user);
+         const response =await getOffers(user.id)
+         setData(response)
+       } else {
+         router.push("/");
+       }
+     };
+     getUser();
+
+  },[])
+
   return (
     <div className="py-10  ">
       <div className=" pb-4">
@@ -32,7 +57,7 @@ const page = async () => {
       </div>
       <div className="w-full ">
         <Table className="w-full ">
-          <TableCaption>A list of your recent invoices.</TableCaption>
+          <TableCaption>A list of your recent Offers.</TableCaption>
           <TableHeader>
             <TableRow>
               <TableHead>Product</TableHead>
@@ -68,4 +93,4 @@ const page = async () => {
   );
 };
 
-export default page;
+export default Page;
