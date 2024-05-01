@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Cross, Person, Phone, Rupee } from "@/components/SVG";
 import { supabase } from "@/lib/SupabaseClient";
+import { web3, contract } from "@/lib/contract";
 
 interface OfferMakerProps {
   product_name: string;
@@ -17,11 +18,31 @@ interface OfferMakerProps {
   item: any;
 }
 
+export interface AccountType {
+  address?: string;
+  balance?: string;
+  chainId?: string;
+  network?: string;
+}
+
+declare global {
+  interface Window {
+    ethereum: any;
+  }
+}
+
 const OfferMaker: React.FC<OfferMakerProps> = ({ product_name, id, item }) => {
   const [sender_name, setSender_Name] = useState<string>();
   const [sender_number, setSender_Number] = useState<string>();
   const [price, setPrice] = useState<string>();
   const [open, setOpen] = useState(false);
+
+   const [balance, setBalance] = useState<string>("");
+   const [address, setAddress] = useState<any>(null);
+   const [connected, setConnected] = useState<boolean>(false);
+   const [account, setAccountData] = useState<any>(null);
+
+
   const handleSubmit = async () => {
     const {
       data: { user },
@@ -37,16 +58,39 @@ const OfferMaker: React.FC<OfferMakerProps> = ({ product_name, id, item }) => {
       product_id: id,
       product_image: item?.response.image,
     });
+    await payAddress()
+    window.location.reload()
     console.log(error);
   };
+
+  
+  useEffect(() => {
+    const fetchBalance = async () => {
+      const accounts = await web3.eth.getAccounts();
+      const account = accounts[0];
+      const balance = await web3.eth.getBalance(account);
+      setBalance(web3.utils.fromWei(balance, "ether"));
+    };
+
+    fetchBalance();
+  }, []);
+
+  
+  const payAddress = async () => {
+    const accounts = await web3.eth.getAccounts();
+    const account = accounts[0];
+    const tx = await contract.methods
+      .payAddress()
+      .send({ from: account, value: web3.utils.toWei("0.1", "ether") });
+    console.log("Transaction hash:", tx.transactionHash);
+  };
+
 
   return (
     <div>
       {" "}
-      <Dialog >
-        <DialogTrigger
-          className="w-full bg-yellow-200 mt-4 py-2  font-medium text-xl"
-        >
+      <Dialog>
+        <DialogTrigger className="w-full bg-yellow-200 mt-4 py-2  font-medium text-xl">
           Make Offer{" "}
         </DialogTrigger>
         <DialogContent>
@@ -126,6 +170,7 @@ const OfferMaker: React.FC<OfferMakerProps> = ({ product_name, id, item }) => {
                   />
                 </div>
               </div>
+              <p className="py-2">Account Balance: {balance} ETH</p>
               <button
                 onClick={handleSubmit}
                 className="w-full bg-yellow-200 mt-4 py-2  font-medium text-lg"

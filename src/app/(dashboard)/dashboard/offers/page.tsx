@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React, { useEffect, useState } from "react";
 import {
   Table,
@@ -11,8 +11,9 @@ import {
 } from "@/components/ui/table";
 import { supabase } from "@/lib/SupabaseClient";
 import { useRouter } from "next/navigation";
+import { contract, web3 } from "@/lib/contract";
 
-const getOffers = async (receiver_id:any) => {
+const getOffers = async (receiver_id: any) => {
   const { data, error } = await supabase
     .from("offers")
     .select()
@@ -21,27 +22,47 @@ const getOffers = async (receiver_id:any) => {
 };
 
 const Page = () => {
+  const router = useRouter();
+  const [user, setUser] = useState<any>(null);
+  const [data, setData] = useState<any>([]);
 
-  const router=useRouter()  
-  const [user,setUser]=useState<any>(null)
-  const [data,setData]=useState<any>([])
+  useEffect(() => {
+    const getUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (user) {
+        setUser(user);
+        const response = await getOffers(user.id);
+        setData(response);
+      } else {
+        router.push("/");
+      }
+    };
+    getUser();
+  }, []);
 
-  useEffect(()=>{
-     const getUser = async () => {
-       const {
-         data: { user },
-       } = await supabase.auth.getUser();
-       if (user) {
-         setUser(user);
-         const response =await getOffers(user.id)
-         setData(response)
-       } else {
-         router.push("/");
-       }
-     };
-     getUser();
+  const acceptOffer = async (id:string) => {
+    const accounts = await web3.eth.getAccounts();
+    const account = accounts[1];
+    const tx = await contract.methods
+      .AcceptPay()
+      .send({ from: account, value: web3.utils.toWei("0.1", "ether") });
+    console.log("Transaction hash:", tx.transactionHash);
+    const { error } = await supabase.from("offers").delete().eq("id", id);
+    window.location.reload();
+  };
 
-  },[])
+  const RejectOffer = async (id: string) => {
+    const accounts = await web3.eth.getAccounts();
+    const account = accounts[1];
+    const tx = await contract.methods
+      .RejectPay()
+      .send({ from: account, value: web3.utils.toWei("0.1", "ether") });
+    console.log("Transaction hash:", tx.transactionHash);
+    const { error } = await supabase.from("offers").delete().eq("id", id);
+    window.location.reload()
+  };
 
   return (
     <div className="py-10  ">
@@ -82,7 +103,22 @@ const Page = () => {
                   <TableCell>{item.sender_name}</TableCell>
                   <TableCell>{item.sender_number}</TableCell>
                   <TableCell>{item.price}</TableCell>
-                  <TableCell></TableCell>
+                  <TableCell>
+                    <button
+                      onClick={() => acceptOffer(item.id)}
+                      className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
+                    >
+                      Accept
+                    </button>
+                  </TableCell>
+                  <TableCell>
+                    <button
+                      onClick={() => RejectOffer(item.id)}
+                      className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
+                    >
+                      Reject
+                    </button>
+                  </TableCell>
                 </TableRow>
               );
             })}
