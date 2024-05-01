@@ -1,7 +1,16 @@
+'use client'
+import { supabase } from "@/lib/SupabaseClient";
 import Link from "next/link";
 import React from "react";
-
+import { useRouter } from "next/navigation";
 const Sidebar = () => {
+
+  const router =useRouter()
+  const Logout=async()=>{
+    const { error } = await supabase.auth.signOut();
+    router.push('/')
+  }
+
   return (
     <div className="min-h-screen   fixed   bg-gray-50 text-gray-800">
       <div className=" flex flex-col min-h-screen top-0 left-0 w-64 bg-white h-full border-r">
@@ -44,8 +53,8 @@ const Sidebar = () => {
               </Link>
             </li>
             <li>
-              <a
-                href="#"
+              <Link
+                href="/dashboard/inbox"
                 className="relative flex flex-row items-center h-11 focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-indigo-500 pr-6"
               >
                 <span className="inline-flex justify-center items-center ml-4">
@@ -70,9 +79,9 @@ const Sidebar = () => {
                 <span className="px-2 py-0.5 ml-auto text-xs font-medium tracking-wide text-indigo-500 bg-indigo-50 rounded-full">
                   New
                 </span>
-              </a>
+              </Link>
             </li>
-            <li>
+            {/* <li>
               <a
                 href="#"
                 className="relative flex flex-row items-center h-11 focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-indigo-500 pr-6"
@@ -97,8 +106,8 @@ const Sidebar = () => {
                   Messages
                 </span>
               </a>
-            </li>
-            <li>
+            </li> */}
+            {/* <li>
               <a
                 href="#"
                 className="relative flex flex-row items-center h-11 focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-indigo-500 pr-6"
@@ -126,7 +135,7 @@ const Sidebar = () => {
                   1.2k
                 </span>
               </a>
-            </li>
+            </li> */}
             <li className="px-5">
               <div className="flex flex-row items-center h-8">
                 <div className="text-sm font-light tracking-wide text-gray-500">
@@ -223,7 +232,7 @@ const Sidebar = () => {
                 </span>
               </Link>
             </li>
-            <li>
+            {/* <li>
               <a
                 href="#"
                 className="relative flex flex-row items-center h-11 focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-indigo-500 pr-6"
@@ -254,11 +263,11 @@ const Sidebar = () => {
                   Settings
                 </span>
               </a>
-            </li>
+            </li> */}
             <li>
-              <a
-                href="#"
-                className="relative flex flex-row items-center h-11 focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-indigo-500 pr-6"
+              <div
+                onClick={Logout}
+                className="relative cursor-pointer flex flex-row items-center h-11 focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-indigo-500 pr-6"
               >
                 <span className="inline-flex justify-center items-center ml-4">
                   <svg
@@ -279,7 +288,7 @@ const Sidebar = () => {
                 <span className="ml-2 text-sm tracking-wide truncate">
                   Logout
                 </span>
-              </a>
+              </div>
             </li>
           </ul>
         </div>
