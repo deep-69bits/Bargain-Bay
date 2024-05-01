@@ -66,6 +66,7 @@ const Page = () => {
          upsert: false,
        });
        console.log({data,error})
+       
      const imageurl =
        "https://nllszuxcqbnhgngchcau.supabase.co/storage/v1/object/public/product_images/" +
        imageName;
