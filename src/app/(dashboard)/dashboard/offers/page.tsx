@@ -103,29 +103,43 @@ const Page = () => {
       .eq("id", item.id);
 
     console.log(pdfUrl);
-    console.log(response)
+    console.log(response);
     setPdfUrl(pdfUrl);
   };
 
+  function convertToEth(amountInr: string | undefined): number | null {
+    if (amountInr == undefined) return null;
+    const amount: number = parseFloat(amountInr);
+    return amount / 244642;
+  }
+
   const acceptOffer = async (item: any) => {
+    const eths = convertToEth(item.price);
     const accounts = await web3.eth.getAccounts();
     const account = accounts[1];
     const tx = await contract.methods
       .AcceptPay()
-      .send({ from: account, value: web3.utils.toWei("0.1", "ether") });
+      .send({
+        from: account,
+        value: web3.utils.toWei(JSON.stringify(eths), "ether"),
+      });
     console.log("Transaction hash:", tx.transactionHash);
     await handleGeneratePdf(item, tx);
     window.location.reload();
   };
 
   const RejectOffer = async (item: any) => {
+    const eths = convertToEth(item.price);
     const accounts = await web3.eth.getAccounts();
     const account = accounts[1];
     const tx = await contract.methods
       .RejectPay()
       .send({ from: account, value: web3.utils.toWei("0.1", "ether") });
     console.log("Transaction hash:", tx.transactionHash);
-    const { error } = await supabase.from("offers").delete().eq("id", item.id);
+    const { error } = await supabase
+      .from("offers")
+      .delete()
+      .eq(JSON.stringify(eths), item.id);
     window.location.reload();
   };
 
