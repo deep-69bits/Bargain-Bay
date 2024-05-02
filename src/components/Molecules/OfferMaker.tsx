@@ -37,11 +37,10 @@ const OfferMaker: React.FC<OfferMakerProps> = ({ product_name, id, item }) => {
   const [price, setPrice] = useState<string>();
   const [open, setOpen] = useState(false);
 
-   const [balance, setBalance] = useState<string>("");
-   const [address, setAddress] = useState<any>(null);
-   const [connected, setConnected] = useState<boolean>(false);
-   const [account, setAccountData] = useState<any>(null);
-
+  const [balance, setBalance] = useState<string>("");
+  const [address, setAddress] = useState<any>(null);
+  const [connected, setConnected] = useState<boolean>(false);
+  const [account, setAccountData] = useState<any>(null);
 
   const handleSubmit = async () => {
     const {
@@ -58,12 +57,11 @@ const OfferMaker: React.FC<OfferMakerProps> = ({ product_name, id, item }) => {
       product_id: id,
       product_image: item?.response.image,
     });
-    await payAddress()
-    window.location.reload()
+    await payAddress();
+    window.location.reload();
     console.log(error);
   };
 
-  
   useEffect(() => {
     const fetchBalance = async () => {
       const accounts = await web3.eth.getAccounts();
@@ -75,16 +73,21 @@ const OfferMaker: React.FC<OfferMakerProps> = ({ product_name, id, item }) => {
     fetchBalance();
   }, []);
 
-  
   const payAddress = async () => {
+    const eths=convertToEth(price)
     const accounts = await web3.eth.getAccounts();
     const account = accounts[0];
     const tx = await contract.methods
       .payAddress()
-      .send({ from: account, value: web3.utils.toWei("0.1", "ether") });
+      .send({ from: account, value: web3.utils.toWei(JSON.stringify(eths), "ether") });
     console.log("Transaction hash:", tx.transactionHash);
   };
 
+  function convertToEth(amountInr: string | undefined): number | null {
+    if (amountInr == undefined) return null;
+    const amount: number = parseFloat(amountInr);
+    return amount / 244642;
+  }
 
   return (
     <div>
@@ -148,7 +151,7 @@ const OfferMaker: React.FC<OfferMakerProps> = ({ product_name, id, item }) => {
                   />
                 </div>
               </div>
-
+              <p className="pt-2">1 ETH = 2,44,642 INR</p>
               <div className="flex flex-col">
                 <label
                   htmlFor="price"
@@ -170,6 +173,16 @@ const OfferMaker: React.FC<OfferMakerProps> = ({ product_name, id, item }) => {
                   />
                 </div>
               </div>
+
+              <p className=" px-2 py-2 pb-2">
+                {" "}
+                {convertToEth(price) ? (
+                  <div className="flex items-center gap-x-2">
+                    {convertToEth(price)}
+                    <span>ETH</span>
+                  </div>
+                ) : null}{" "}
+              </p>
               <p className="py-2">Account Balance: {balance} ETH</p>
               <button
                 onClick={handleSubmit}
