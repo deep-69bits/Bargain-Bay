@@ -7,7 +7,7 @@ import Link from 'next/link';
 export default function FloatingActionButton() {
   return (
     <Box sx={{ '& > :not(style)': { m: 1 } }}>
-      <Fab color="primary" aria-label="add" className="bg-yellow-300 fixed bottom-0 right-0 ">
+      <Fab color="primary" aria-label="add" className="bg-yellow-300 fixed bottom-12 right-12 scale-125 ">
         <Link href={'/bot'}>
         <QuestionAnswerIcon />
         </Link>
