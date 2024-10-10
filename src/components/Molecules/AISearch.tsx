@@ -67,7 +67,7 @@ const AISearch = ({ children, products }: any) => {
   };
 
   const genAI = new GoogleGenerativeAI(
-    "AIzaSyDZ2MjTAhCjIfWk79s3fJ89cCP1x97bKP8"
+    "AIzaSyANHSYcHbuMcKI8-d_2O9YzWvSasBx3RRE"
   );
   const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
