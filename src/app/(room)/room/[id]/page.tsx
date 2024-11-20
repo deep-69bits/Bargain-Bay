@@ -28,8 +28,8 @@ const Page = ({ params }: { params: { id: string } }) => {
 
   useEffect(() => {
     const myMeeting = async () => {
-      const appID = 383430569;
-      const serverSecret = "3922603df74e480a2831aa833dd8e527";
+      const appID =  619641425;
+      const serverSecret = "888350f201e710428d76e4cd50863d4a";
 
       const KitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
         appID,
