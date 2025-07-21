@@ -122,15 +122,19 @@ const Page = () => {
   const categories = ["Bike", "Car", "Head Phone", "Laptop", "Phone", "TV"];
 
   const SubmitProduct = async (e: any) => {
+    console.log("debug1")
     e.preventDefault();
     const imageName = imageProfile.name + generated(6);
     console.log(imageName);
     var { data, error } = await supabase.storage
-      .from("product_images")
+      .from("productimages")
       .upload("/" + imageName, imageProfile, {
         cacheControl: "3600",
         upsert: false,
       });
+    console.log(
+      "image", {data, error}
+    )
     const imageurl =
       "https://nllszuxcqbnhgngchcau.supabase.co/storage/v1/object/public/product_images/" +
       imageName;
@@ -151,8 +155,8 @@ const Page = () => {
       seller_phoneNumber: phoneNumber,
     });
     console.log(response);
-    router.replace("/dashboard/addproduct");
-    location.reload()
+    // router.replace("/dashboard/addproduct");
+    // location.reload()
   };
 
   useEffect(() => {
@@ -171,7 +175,7 @@ const Page = () => {
 
   return (
     <div className=" py-10 pr-20 pl-10">
-      <form onSubmit={SubmitProduct}>
+     
         <div className="space-y-12">
           <div className=" pb-12">
             <h2 className="text-base font-semibold leading-7 text-gray-900">
@@ -488,12 +492,12 @@ const Page = () => {
           </button>
           <button
             type="submit"
+            onClick={SubmitProduct}
             className="rounded-md bg-indigo-600 px-3 py-2  text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
             Save
           </button>
         </div>
-      </form>
     </div>
   );
 };
