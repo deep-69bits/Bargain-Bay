@@ -2,6 +2,8 @@
 import { supabase } from "@/lib/SupabaseClient";
 import React, { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const Page = () => {
   const [productName, setProductName] = useState("");
   const [productPrice, setProductPrice] = useState("");
@@ -122,24 +124,40 @@ const Page = () => {
   const categories = ["Bike", "Car", "Head Phone", "Laptop", "Phone", "TV"];
 
   const SubmitProduct = async (e: any) => {
-    console.log("debug1")
     e.preventDefault();
+
+    if (!user) {
+      console.error("User not authenticated.");
+      return;
+    }
+
+    if (!imageProfile) {
+      console.error("No image selected.");
+      return;
+    }
+
+    console.log("debug1");
     const imageName = imageProfile.name + generated(6);
     console.log(imageName);
-    var { data, error } = await supabase.storage
+    var { data, error: uploadError } = await supabase.storage
       .from("productimages")
       .upload("/" + imageName, imageProfile, {
         cacheControl: "3600",
         upsert: false,
       });
-    console.log(
-      "image", {data, error}
-    )
+    console.log("image upload response:", { data, error: uploadError });
+
+    if (uploadError) {
+      console.error("Error uploading image:", uploadError.message);
+      toast.error("Error uploading image: " + uploadError.message);
+      return;
+    }
+
     const imageurl =
-      "https://nllszuxcqbnhgngchcau.supabase.co/storage/v1/object/public/product_images/" +
+      "https://jdlomuaimhhuqkgvwbnd.supabase.co/storage/v1/object/public/productimages/" +
       imageName;
 
-    const response = await supabase.from("products").insert({
+    const { data: productData, error: productError } = await supabase.from("products").insert({
       user_id: user.id,
       product_name: productName,
       product_price: productPrice,
@@ -154,9 +172,16 @@ const Page = () => {
       seller_name: name,
       seller_phoneNumber: phoneNumber,
     });
-    console.log(response);
-    // router.replace("/dashboard/addproduct");
-    // location.reload()
+    console.log("Product insertion response:", { productData, productError });
+
+    if (productError) {
+      console.error("Error inserting product:", productError.message);
+      toast.error("Error inserting product: " + productError.message);
+      return;
+    }
+
+    toast.success("Product inserted successfully!");
+    router.replace("/dashboard");
   };
 
   useEffect(() => {
@@ -175,7 +200,7 @@ const Page = () => {
 
   return (
     <div className=" py-10 pr-20 pl-10">
-     
+     <ToastContainer />
         <div className="space-y-12">
           <div className=" pb-12">
             <h2 className="text-base font-semibold leading-7 text-gray-900">

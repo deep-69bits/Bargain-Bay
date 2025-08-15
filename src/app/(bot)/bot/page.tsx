@@ -30,8 +30,8 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [promptHidden, setPromptHidden] = useState<boolean>(false);
 
-  const API_KEY = "AIzaSyDdqDkLjjV_o7oO24OVs7C1A-UxWLbzA3A";
-  const MODEL_NAME = "gemini-pro";
+  const API_KEY = "AIzaSyCuYSEqDgH5pmuX8kamS017lg2M4g9vU1U";
+  const MODEL_NAME = "gemini-2.0-flash-lite";
 
   const questionSet = [
     [
