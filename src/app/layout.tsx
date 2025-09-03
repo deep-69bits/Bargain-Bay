@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Lexend } from "next/font/google";
 import "./globals.css";
+import "antd/dist/reset.css";
 const inter = Lexend({ weight: ["400"], subsets: ["latin"] });
 
 

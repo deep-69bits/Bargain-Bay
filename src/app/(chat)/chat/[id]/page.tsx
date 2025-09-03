@@ -30,7 +30,7 @@ const Page = ({ params }: { params: { id: string } }) => {
   useLayoutEffect(() => {
     const getReceiver = async () => {
       const { data, error } = await supabase
-        .from("users")
+        .from("profiles")
         .select()
         .eq("id", params.id);
       if (data) {

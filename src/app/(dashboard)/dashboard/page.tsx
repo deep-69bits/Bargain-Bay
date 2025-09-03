@@ -61,7 +61,7 @@ const Page: React.FC = () => {
       if (user) {
         setUser(user);
         const response = await supabase
-          .from("users")
+          .from("profiles")
           .select("*")
           .eq("id", user.id);
         if (response && response.data) {

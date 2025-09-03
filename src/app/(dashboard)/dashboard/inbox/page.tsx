@@ -63,7 +63,7 @@ const Page = () => {
   useEffect(() => {
     const getProfiles = async () => {
       const { data, error } = await supabase
-        .from("users")
+        .from("profiles")
         .select("*")
         .in("id", uniqueUsers);
       setProfiles(data);

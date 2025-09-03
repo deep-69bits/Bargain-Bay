@@ -71,7 +71,7 @@ const Page = () => {
        "https://nllszuxcqbnhgngchcau.supabase.co/storage/v1/object/public/product_images/" +
        imageName;
         console.log(user.id)
-        const response = await supabase.from("users").update({
+        const response = await supabase.from("profiles").update({
           profile_pic: imageurl,
           street_address: streetAddress,
           city: city,

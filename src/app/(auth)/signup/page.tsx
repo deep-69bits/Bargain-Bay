@@ -27,7 +27,7 @@ const page = () => {
         toast("Error during sign-up!");
       } else {
         toast("Please check your mail!");
-         const response = await supabase.from("users").insert({
+         const response = await supabase.from("profiles").insert({
            id: data?.user?.id,
            name: username,
          });
