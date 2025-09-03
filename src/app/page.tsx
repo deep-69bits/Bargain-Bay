@@ -6,7 +6,8 @@ import Layout from "@/components/Layout/index";
 
 import FloatingActionButton from "@/components/ActionButton/index";
 
-import MetaMask from "@/components/MetaMask";
+import dynamic from "next/dynamic";
+const MetaMask = dynamic(() => import("@/components/MetaMask"), { ssr: false });
 
 export default function Home() {
   return (

@@ -1,6 +1,7 @@
 import React from 'react'
 import { Bungee } from "next/font/google";
-import Lottie from "lottie-react";
+import dynamic from "next/dynamic";
+const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 import Button from '@/components/Buttons';
 import HeroLottie from '../../public/Images/heroLottie.json'
 const inter = Bungee({ weight: ['400','400'], subsets: ["latin"] });

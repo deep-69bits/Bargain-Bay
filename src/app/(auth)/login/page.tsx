@@ -1,7 +1,8 @@
 "use client";
 import React, { useState } from "react";
 import { supabase } from "@/lib/SupabaseClient";
-import Lottie from "lottie-react";
+import dynamic from "next/dynamic";
+const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 import loginLottie from "./loginLottie.json";
 import Link from "next/link";
 import { ToastContainer, toast } from "react-toastify";

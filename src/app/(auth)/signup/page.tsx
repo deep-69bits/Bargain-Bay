@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
-import Lottie from "lottie-react";
+import dynamic from "next/dynamic";
+const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 import signupLottie from "./signupLottie.json";
 import Link from "next/link";
 import { supabase } from "@/lib/SupabaseClient";

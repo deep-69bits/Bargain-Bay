@@ -9,7 +9,8 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Checkbox } from "@/components/ui/checkbox";
-import AISearch from "@/components/Molecules/AISearch";
+import dynamic from "next/dynamic";
+const AISearch = dynamic(() => import("@/components/Molecules/AISearch"), { ssr: false });
 
 type Product = {
   id: string;

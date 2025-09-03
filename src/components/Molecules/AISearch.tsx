@@ -11,7 +11,8 @@ import {
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Markdown from "markdown-to-jsx";
-import Lottie from "lottie-react";
+import dynamic from "next/dynamic";
+const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 import Robot from "./Thinking_Robot.json";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
