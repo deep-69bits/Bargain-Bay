@@ -138,10 +138,12 @@ const Page = () => {
 
     console.log("debug1");
     const imageName = imageProfile.name + generated(6);
-    console.log(imageName);
+    const imagePath = "/" + imageName;
+    console.log("Uploading image:", imagePath);
+    
     var { data, error: uploadError } = await supabase.storage
       .from("productimages")
-      .upload("/" + imageName, imageProfile, {
+      .upload(imagePath, imageProfile, {
         cacheControl: "3600",
         upsert: false,
       });
@@ -153,9 +155,20 @@ const Page = () => {
       return;
     }
 
-    const imageurl =
-      "https://jdlomuaimhhuqkgvwbnd.supabase.co/storage/v1/object/public/productimages/" +
-      imageName;
+    // Get the public URL for the uploaded image - use the same path as upload
+    const { data: urlData } = supabase.storage
+      .from("productimages")
+      .getPublicUrl(imagePath);
+    
+    const imageurl = urlData.publicUrl;
+    console.log("Image URL stored:", imageurl);
+    
+    // Verify the URL is correct
+    if (!imageurl || !imageurl.includes('supabase.co')) {
+      console.error("Invalid image URL generated:", imageurl);
+      toast.error("Failed to generate image URL");
+      return;
+    }
 
     const { data: productData, error: productError } = await supabase.from("products").insert({
       user_id: user.id,
