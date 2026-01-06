@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+
 import {
   Dialog,
   DialogContent,
@@ -8,14 +8,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { GoogleGenerativeAI } from "@google/generative-ai";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import Markdown from "markdown-to-jsx";
-import dynamic from "next/dynamic";
-const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
-import Robot from "./Thinking_Robot.json";
-
+import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import Markdown from "markdown-to-jsx";
+import Robot from "./Thinking_Robot.json";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import dynamic from "next/dynamic";
+
+const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
+
 
 const Card = ({ item, selected }: any) => {
   return (
@@ -68,9 +71,9 @@ const AISearch = ({ children, products }: any) => {
   };
 
   const genAI = new GoogleGenerativeAI(
-    "AIzaSyCuYSEqDgH5pmuX8kamS017lg2M4g9vU1U"
+    "AIzaSyA3vSIwAMZon-UDy_is5Ya7-IJCsLWjlTQ"
   );
-  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-lite" });
+  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
   const handleGenerate = async () => {
     setSteps(steps + 1);
