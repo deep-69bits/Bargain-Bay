@@ -1,5 +1,7 @@
 "use client";
+
 import React, { useState } from "react";
+
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import Markdown from "react-markdown";
 
@@ -48,9 +50,9 @@ const page = () => {
   ];
 
   const genAI = new GoogleGenerativeAI(
-    "AIzaSyDZ2MjTAhCjIfWk79s3fJ89cCP1x97bKP8"
+    "AIzaSyA3vSIwAMZon-UDy_is5Ya7-IJCsLWjlTQ"
   );
-  const model = genAI.getGenerativeModel({ model: "gemini-pro" }); // Specify the model
+  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" }); // Specify the model
 
   const handleGenerate = async () => {
     if (!prompt) return alert("Please enter a prompt.");
